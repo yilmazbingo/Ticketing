@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-depl
+spec:
+  replicas: 1
+  # this tells deployment, how to find all the pods it has to create
+  selector:
+    matchLabels:
+      app: orders
+
+  # how to create each individual pod that this deployment is going to create
+  template:
+    metadata:
+      # selector has to match the label
+      labels:
+        app: orders
+
+    spec:
+      containers:
+        - name: orders
+          image: kalinicovic/orders
+          env:
+            # this service handles authentication by itself. it will validate the token if it has the original key.
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  # we create this by "kubectl create secret generic jwt-secret --from-literal=JWT_KEY=randomkey"
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: MONGO_URI
+              value: "mongodb://orders-mongo-srv:27017/orders"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-srv
+spec:
+  # this tells the service how to find the set of pods that is supposed to govern access to. we want to find all the pods app:orders
+  selector:
+    app: orders
+  ports:
+    - name: orders
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

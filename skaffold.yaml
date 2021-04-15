@@ -1,0 +1,44 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  # whenever we build image, do not push it automatically. default is true
+  local:
+    push: false
+    # artifacts sync the code here.
+  artifacts:
+    - image: kalinicovic/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/***/*.ts"
+            dest: .
+    - image: kalinicovic/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+    - image: kalinicovic/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/***/*.ts"
+            dest: .
+    - image: kalinicovic/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/***/*.ts"
+            dest: .

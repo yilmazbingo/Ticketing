@@ -1,0 +1,44 @@
+# Deployments watches pods
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  # this tells deployment, how to find all the pods it has to create
+  selector:
+    matchLabels:
+      app: auth
+  # how to create each individual pod that this deployment is going to create
+  template:
+    metadata:
+      # selector has to match the label
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: kalinicovic/auth
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: MONGO_URI
+              value: "mongodb://auth-mongo-srv:27017/microservices"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+  # this tells the service how to find the set of pods that is supposed to govern access to. we want to find all the pods app:auth
+  selector:
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
