@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../../app";
-import { Ticket } from "../../models/ticket";
+import { Ticket } from "../../models/order";
 import { natsWrapper } from "../../nats-wrapper";
 // jet will look for the _mocks__ and import nats-wrapper from there
 jest.mock("../../nats-wrapper");

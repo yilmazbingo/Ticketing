@@ -7,13 +7,8 @@ import Header from "../components/header";
 // if you want to include global css in our project, we can only import into this App file.
 // this file always load up when the user visits our application
 
-const AppComponent = ({ Component, pageProps, currentUser }) => {
-  return (
-    <div>
-      <Header currentUser={currentUser}></Header>
-      <Component {...pageProps} />
-    </div>
-  );
+const AppComponent = ({ Component, pageProps }) => {
+  return <Component {...pageProps} />;
 };
 
 // Error: Anonymous arrow functions cause Fast Refresh to not preserve local component state.Please add a name to your function
@@ -22,19 +17,25 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 //   return <Component {...pageProps} />;
 // };
 // getInitialProps can be attached to component but not getServerSideProps
-export const getServerSideProps = async (appContext) => {
-  const client = buildClient(appContext.ctx);
-  const { data } = await client.get("/api/users/currentuser");
-  let pageProps = {};
-  if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
-  }
-  console.log(data);
-  return {
-    pageProps,
-    ...data,
-  };
-};
+// AppComponent.getInitialProps = async (appContext) => {
+//   const client = buildClient(appContext.ctx);
+//   const { data } = await client.get("/api/users/currentuser");
+//   console.log("data of currentUser", data);
+//   // we are invoking the getInitials of the page that beign rendered
+//   let pageProps = {};
+//   if (appContext.Component.getinitialProps) {
+//     // we are providing "client" to each getInitialProps
+//     pageProps = await appContext.Component.getInitialProps(
+//       appContext.ctx,
+//       client,
+//       data.currentUser
+//     );
+//   }
+//   console.log(data);
+//   return {
+//     props: { yilmaz: "bingol", pageProps, ...data },
+//   };
+// };
 
 // arguments that are provided in AppComponent.getInitialProps are different than page's getInitialProps.(context==={Component,ctx=(req,res)})
 

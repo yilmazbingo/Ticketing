@@ -1,24 +1,33 @@
 import React from "react";
 import buildClient from "../api/build-client";
+
+import BaseLayout from "../components/BaseLayout";
+
 //useRequest is a hook and hooks are used inside a  component. getInitialsProps is not a component, it is a plain function. we are not allowed to fetch data inside of a component during the ssr process.
 const Landing = ({ currentUser }) => {
-  return currentUser ? (
-    <h1>You are signed in</h1>
-  ) : (
-    <h1>You are not signed in</h1>
+  console.log("Currentuser in index.js", currentUser);
+
+  return (
+    <BaseLayout currentUser={currentUser}>
+      {currentUser ? (
+        <h1>You are signed in</h1>
+      ) : (
+        <h1>You are not signed in</h1>
+      )}
+    </BaseLayout>
   );
 };
 
 // when we make request on the server in next,js it will fail because of k8s/next. we need to add config
 // getInitialProps can be attached to component but not getServerSideProps
 
-// export const getServerSideProps = async (context) => {
-//   const client = buildClient(context);
-//   const { data } = await client.get("/api/users/currentuser");
-//   return data;
-// };
-
 export default Landing;
+export const getServerSideProps = async (context) => {
+  const client = buildClient(context);
+  const { data } = await client.get("/api/users/currentuser");
+
+  return { props: { currentUser: data } };
+};
 // we changed the host file, ticketing.dev=localhost. so when we make request to ticketing.dev, networking layer in your machine will translate it into the 127.0.0.1:80. default port=80. 127.0.0.1:80 is bound to by ingress-nginx. it means ingress-nginx will receive that request and read it off appropriately and will pass it to client. next will response successfully if we make request from browser to "/api/users/currentuser". whenever we try to make a request and we do not specify the domain, by default your browser is going to assume you are trying to make a request to the the current domain. "ticketing.dev/api/users/currentUser"
 
 //But when we make request on the server, inside getInitialProps, when we m ake request to "ticketing.dev", that request will be converted to "127.0.0.1:80", ingress-nginx config rules will assign to client, client will render Landing page. before rendering the page it will call the getInitialProps whick makes request to "/api/users/currentuser" without specifying a domain. that request will go through the Networking layer which is run by node-http. node-http browser works similar to browser. if you did not specify a domain, node-http layer is going to assume that you are trying to make request on your local machine. it will stich the localhost:80 to the request. Critical thing is we are running our app inisde a container. a container is essentially its own litte world. so when we try to make request to "127.0.0.1:80", this address inside that container not outside world. nothing is running on 127.0.0.1:80 inside that container. it was not redirected back to nginx-ingress

@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import { Ticket } from "../models/ticket";
+import { Ticket } from "../models/order";
 import {
   validateRequest,
   NotAuthorizedError,
@@ -34,7 +34,6 @@ router.put(
     await ticket.save();
     new TicketUpdatedPublisher(natsWrapper.client).publish({
       id: ticket.id,
-      version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId,

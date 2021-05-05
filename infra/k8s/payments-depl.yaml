@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tickets-depl
+  name: payments-depl
 spec:
   replicas: 1
   # this tells deployment, how to find all the pods it has to create
   selector:
     matchLabels:
-      app: tickets
+      app: payments
 
   # how to create each individual pod that this deployment is going to create
   template:
     metadata:
       # selector has to match the label
       labels:
-        app: tickets
+        app: payments
 
     spec:
       containers:
-        - name: tickets
-          image: kalinicovic/tickets
+        - name: payments
+          image: kalinicovic/payments
           env:
             # this service handles authentication by itself. it will validate the token if it has the original key.
             - name: JWT_KEY
@@ -29,7 +29,7 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
             - name: MONGO_URI
-              value: "mongodb://tickets-mongo-srv:27017/tickets"
+              value: "mongodb://payments-mongo-srv:27017/payments"
             - name: NATS_URL
               value: "http://nats-srv:4222"
             - name: NATS_CLUSTER_ID
@@ -44,13 +44,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tickets-srv
+  name: payments-srv
 spec:
-  # this tells the service how to find the set of pods that is supposed to govern access to. we want to find all the pods app:tickets
+  # this tells the service how to find the set of pods that is supposed to govern access to. we want to find all the pods app:payments
   selector:
-    app: tickets
+    app: payments
   ports:
-    - name: tickets
+    - name: payments
       protocol: TCP
       port: 3000
       targetPort: 3000

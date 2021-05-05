@@ -7,6 +7,7 @@ interface Event {
   data: any;
 }
 export abstract class Publisher<T extends Event> {
+  // each publisher class has to implement abstract properties or methods
   abstract subject: T["subject"];
   private client: Stan;
   constructor(client: Stan) {

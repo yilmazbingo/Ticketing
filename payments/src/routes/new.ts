@@ -3,7 +3,7 @@ import { body } from "express-validator";
 // express validator will set an error in incomin request
 import { requireAuth, validateRequest } from "@yilmazcik/common";
 import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
-import { Ticket } from "../models/ticket";
+import { Ticket } from "../models/order";
 import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
@@ -32,7 +32,6 @@ router.post(
     // .client will call getter
     await new TicketCreatedPublisher(natsWrapper.client).publish({
       id: ticket.id,
-      version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId,
