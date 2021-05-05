@@ -3,10 +3,10 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 import { errorHandler, NotFoundError, currentUser } from "@yilmazcik/common";
-import { createTicketRouter } from "./routes/new";
-import { showTicketRouter } from "./routes/show";
-import { indexTicketRouter } from "./routes/index";
-import { updateTicketRouter } from "./routes/update";
+import { createOrderRouter } from "./routes/new";
+import { showOrderRouter } from "./routes/show";
+import { indexOrderRouter } from "./routes/index";
+import { deleteOrderRouter } from "./routes/delete";
 const app = express();
 // traffic is proxied to our application through nginx-ingress. express does not trust proxy.
 app.set("trust proxy", true);
@@ -19,10 +19,10 @@ app.use(
   })
 );
 app.use(currentUser);
-app.use(indexTicketRouter);
-app.use(createTicketRouter);
-app.use(showTicketRouter);
-app.use(updateTicketRouter);
+app.use(indexOrderRouter);
+app.use(createOrderRouter);
+app.use(showOrderRouter);
+app.use(deleteOrderRouter);
 
 // app.all will be watching for any type of request to any route
 // when we mark a func with "async", it no longer returns a value, instead it returns a promise thats is going to resolve with some value in the future even we throw an error inside.

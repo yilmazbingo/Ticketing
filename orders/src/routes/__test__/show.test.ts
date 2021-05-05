@@ -1,33 +1,59 @@
 import request from "supertest";
 import { app } from "../../app";
+import { Ticket } from "../../models";
 import mongoose from "mongoose";
+it("fetches the order", async () => {
+  // Create a ticket
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "concert",
+    price: 32,
+  });
 
-it("returns 404 if the ticket is not found", async () => {
-  // if we did not define route handler, it would pass
-  const id = new mongoose.Types.ObjectId().toHexString();
-  await request(app).get(`/api/tickets/${id}`).send().expect(404);
-  // .expect(404); to get the console.log remover the expectation
-  // in our error logic, we said if it is not Custom error , throw "somehting went wrong" thats waht we got here
-  // error: "Cast to ObjectId failed for value" that we did not pass a valid id construction
-  // console.log(response.body);
-});
+  await ticket.save();
+  const user = global.signin();
+  // make a request to build an order with this ticket
 
-it("returns the ticket if the ticket is found", async () => {
-  // we could build test and save it first. this also valid option
-  //Ticket.build({}), ticket.save()
-  const title = "concert";
-  const price = 20;
-  const response = await request(app)
-    .post("/api/tickets")
-    .set("Cookie", global.signin())
-    .send({ title, price })
+  const { body: order } = await request(app)
+    .post("/api/orders")
+    .set("Cookie", user)
+    .send({ ticketId: ticket.id })
     .expect(201);
 
-  const ticketResponse = await request(app)
-    .get(`/api/tickets/${response.body.id}`)
+  // make a request to fetch the order
+
+  const { body: fetchedOrder } = await request(app)
+    .get(`/api/orders/${order.id}`)
+    .set("Cookie", user)
     .send()
     .expect(200);
 
-  expect(ticketResponse.body.title).toEqual(title);
-  expect(ticketResponse.body.price).toEqual(price);
+  expect(fetchedOrder.id).toEqual(order.id);
+});
+
+it("returns an error if one user tries to fetch another user's order", async () => {
+  // Create a ticket
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title: "concert",
+    price: 32,
+  });
+
+  await ticket.save();
+  const user = global.signin();
+  // make a request to build an order with this ticket
+
+  const { body: order } = await request(app)
+    .post("/api/orders")
+    .set("Cookie", user)
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  const userTwo = global.signin();
+
+  await request(app)
+    .get(`/api/orders/${order.id}`)
+    .set("Cookie", userTwo)
+    .send()
+    .expect(401);
 });

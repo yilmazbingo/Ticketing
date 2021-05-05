@@ -11,6 +11,7 @@ declare global {
   }
 }
 
+jest.mock("../nats-wrapper");
 // before all isntances start up craete the mongdb server
 beforeAll(async () => {
   // process.env is defiend when we run pod.
