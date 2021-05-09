@@ -13,6 +13,7 @@ interface TicketDoc extends mongoose.Document {
   price: number;
   userId: string;
   version: number;
+  orderId?: string;
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
@@ -26,6 +27,11 @@ const ticketSchema = new mongoose.Schema(
     userId: {
       type: String,
       required: true,
+    },
+    // when a ticket is created, we make follow up request to see the status of ticket. if reserved or not
+    // it is not required because when it was first created, there would be no order associated with.
+    orderId: {
+      type: String,
     },
   },
   {
