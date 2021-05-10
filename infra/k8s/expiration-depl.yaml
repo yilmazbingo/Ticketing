@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  # this tells deployment, how to find all the pods it has to create
+  selector:
+    matchLabels:
+      app: expiration
+
+  # how to create each individual pod that this deployment is going to create
+  template:
+    metadata:
+      # selector has to match the label
+      labels:
+        app: expiration
+
+    spec:
+      containers:
+        - name: expiration
+          image: kalinicovic/expiration
+          env:
+            # this service handles authentication by itself. it will validate the token if it has the original key.
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT_ID
+              # we are assigning pod name as unique client id
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            # this telss expration service how to connect to redis
+            - name: REDIS_HOST
+              value: expiration-redis-srv
+# this service will not be contacted with any part of application. so we do not need service config
+
