@@ -5,11 +5,11 @@ import BaseLayout from "../components/BaseLayout";
 
 //useRequest is a hook and hooks are used inside a  component. getInitialsProps is not a component, it is a plain function. we are not allowed to fetch data inside of a component during the ssr process.
 const Landing = ({ currentUser }) => {
-  console.log("Currentuser in index.js", currentUser);
+  console.log("Currentuser in index.js", currentUser.currentUser);
 
   return (
-    <BaseLayout currentUser={currentUser}>
-      {currentUser ? (
+    <BaseLayout currentUser={currentUser.currentUser}>
+      {currentUser.currentUser ? (
         <h1>You are signed in</h1>
       ) : (
         <h1>You are not signed in</h1>
@@ -25,6 +25,7 @@ export default Landing;
 export const getServerSideProps = async (context) => {
   const client = buildClient(context);
   const { data } = await client.get("/api/users/currentuser");
+  console.log("Data", data);
 
   return { props: { currentUser: data } };
 };

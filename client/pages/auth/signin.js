@@ -6,7 +6,7 @@ import BaseLayout from "../../components/BaseLayout";
 import buildClient from "../../api/build-client";
 
 // next.js does not like anonymous functions
-const signIn = () => {
+const signIn = ({ currentUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { doRequest, errors } = useRequest({
