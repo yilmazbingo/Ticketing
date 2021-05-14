@@ -21,9 +21,12 @@ metadata:
   name: ingress-srv
   annotations:
     # use the shared ingress-nginx
+    # nginx.ingress.kubernetes.io/rewrite-target: /static/$2
     kubernetes.io/ingress.class: nginx
+    nginx.org/client-max-body-size: "4m"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/auth-method: POST
 spec:
   # ingressClassName: external-lb
   # class: acme-lb
@@ -31,6 +34,7 @@ spec:
   #   - ip: "172.17.0.1"
   #     hostnames:
   #     - "host.minikube.internal"
+  # The default backend is a service which handles all URL paths and hosts the nginx controller doesn't understand
   defaultBackend:
     service:
       name:

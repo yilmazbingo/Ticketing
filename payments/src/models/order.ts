@@ -44,6 +44,7 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
+// this will mongoose do not use "__v" flag
 orderSchema.set("versionKey", "version");
 orderSchema.plugin(updateIfCurrentPlugin);
 // so we can use this even in test environment
@@ -53,7 +54,7 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
     _id: attrs.id,
     version: attrs.version,
     price: attrs.price,
-    userID: attrs.userId,
+    userId: attrs.userId,
     status: attrs.status,
   });
 };

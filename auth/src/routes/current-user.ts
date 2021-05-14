@@ -8,6 +8,7 @@ router.get(
   currentUser,
   (req: Request, res: Response) => {
     // if req.currentUser is not defined it will send undefined. we dont want it. we send "null
+    console.log("request to api/users/currentuser", req.currentUser);
     res.send({ currentUser: req.currentUser || null });
   }
 );

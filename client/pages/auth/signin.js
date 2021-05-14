@@ -22,7 +22,7 @@ const signIn = ({ currentUser }) => {
     // Router.push("/"); instead I add onSuccess callback to the useRequest hook.
   };
   return (
-    <BaseLayout currentUser={currentUser}>
+    <BaseLayout currentUser={currentUser.currentUser}>
       <form onSubmit={onSubmit}>
         <h1>Sign In</h1>
         <div className="form-group">
