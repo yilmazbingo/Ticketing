@@ -1,43 +1,65 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-// express validator will set an error in incomin request
-import { requireAuth, validateRequest } from "@yilmazcik/common";
-import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
-import { Ticket } from "../models/order";
+import {
+  requireAuth,
+  validateRequest,
+  BadRequestError,
+  NotFoundError,
+  NotAuthorizedError,
+  OrderStatus,
+} from "@yilmazcik/common";
+import { stripe } from "../stripe";
+import { PaymentCreatedPublisher } from "../events/publishers/payment-created-publisher";
+import { Order } from "../models/order";
+import { Payment } from "../models/payment";
 import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
 router.post(
-  "/api/tickets",
+  "/api/payments",
   requireAuth,
   [
-    body("title").not().isEmpty().withMessage("Title is required"),
-    body("price")
-      .isFloat({ gt: 0 })
-      .withMessage("Price must be greater than 0"),
+    body("token").not().isEmpty().withMessage("Token is not provided"),
+    body("orderId").not().isEmpty().withMessage("Order Id must be provided"),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { title, price } = req.body;
+    const { token, orderId } = req.body;
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new NotFoundError();
+    }
 
-    const ticket = Ticket.build({
-      title,
-      price,
-      userId: req.currentUser!.id,
+    // currentUser is defined in requireAuth
+    if (order.userId !== req.currentUser!.id) {
+      throw new NotAuthorizedError();
+    }
+    if (order.status === OrderStatus.Cancelled) {
+      throw new BadRequestError("Cannot pay for cancelled order");
+    }
+
+    const charge = await stripe.charges.create({
+      currency: "usd",
+      amount: order.price * 100,
+      source: token,
     });
-    /*Better approach would be we save ticket and event to db. then nats would be watching for the database event collection. imagine user deposits money, it is saved into transaction history but if publishing fails or nats is down, his account balance would be off*/
-    await ticket.save();
-    // mongoose can make sanitation with pre'save" hooks. so we should emit the saved version of ticket.
-    // .client will call getter
-    await new TicketCreatedPublisher(natsWrapper.client).publish({
-      id: ticket.id,
-      title: ticket.title,
-      price: ticket.price,
-      userId: ticket.userId,
+
+    const payment = Payment.build({
+      orderId,
+      stripeId: charge.id,
     });
-    res.status(201).send(ticket);
+
+    await payment.save();
+    // order service will be listening for this event
+    await new PaymentCreatedPublisher(natsWrapper.client).publish({
+      id: payment.id,
+      orderId: payment.orderId,
+      stripeId: payment.stripeId,
+    });
+
+    res.status(201).send({ paymentId: payment.id });
   }
 );
 
-export { router as createTicketRouter };
+export { router as createChargeRouter };

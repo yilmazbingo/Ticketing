@@ -4,11 +4,7 @@ export const natsWrapper = {
   // rather than providing fake function, we provide mock function.
   // mock is a fake function but it allows us to make expectations around it in test environment.
   client: {
-    // ------------ we replace the fake function with the mock function
-    // publish: (subject: string, data: string, callback: () => void) => {
-    //   callback();
-    // },
-    // publish:jest.fn()
+    // when we call publish, mockImplmentation will be called
     publish: jest
       .fn()
       .mockImplementation(

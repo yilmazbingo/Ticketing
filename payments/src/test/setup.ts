@@ -6,12 +6,14 @@ let mongo: any;
 declare global {
   namespace NodeJS {
     interface Global {
-      signin(): string[];
+      signin(id?: string): string[];
     }
   }
 }
 
 jest.mock("../nats-wrapper");
+process.env.STRIPE_KEY =
+  "sk_test_51IpWSSEveMq3I0sT8Li2SIGXCiJ0mDbQijl2sCpXYc5VGyZtEK20EX9gRXMvGggKCw2mmcdfsCpy9p2WoTxh5xHE00gkvT05ZE";
 
 // before all isntances start up craete the mongdb server
 beforeAll(async () => {
@@ -39,10 +41,10 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = () => {
+global.signin = (id?: string) => {
   // BUild a JWT payload.
   const payload = {
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: id || new mongoose.Types.ObjectId().toHexString(),
     email: "test@test.com",
   };
 
