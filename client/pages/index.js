@@ -1,19 +1,40 @@
 import React from "react";
+import Link from "next/link";
 import buildClient from "../api/build-client";
 
 import BaseLayout from "../components/BaseLayout";
 
 //useRequest is a hook and hooks are used inside a  component. getInitialsProps is not a component, it is a plain function. we are not allowed to fetch data inside of a component during the ssr process.
-const Landing = ({ currentUser }) => {
-  console.log("Currentuser in index.js", currentUser.currentUser);
+const Landing = ({ currentUser, tickets }) => {
+  console.log("tickets", tickets);
+  const ticketList = tickets.map((ticket) => {
+    return (
+      <tr key={ticket.id}>
+        <td>{ticket.title} </td>
+        <td>{ticket.price} </td>
+        <td>
+          <Link href={`/tickets/${ticket.id}`}> View </Link>
+        </td>
+      </tr>
+    );
+  });
 
   return (
     <BaseLayout currentUser={currentUser.currentUser}>
-      {currentUser.currentUser ? (
-        <h1>You are signed in</h1>
-      ) : (
-        <h1>You are not signed in</h1>
-      )}
+      <div>
+        <h1>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody>{ticketList}</tbody>
+          </table>
+        </h1>
+      </div>
     </BaseLayout>
   );
 };
@@ -25,9 +46,9 @@ export default Landing;
 export const getServerSideProps = async (context) => {
   const client = buildClient(context);
   const { data } = await client.get("/api/users/currentuser");
-  console.log("Data", data);
+  const { data: tickets } = await client.get("api/tickets");
 
-  return { props: { currentUser: data } };
+  return { props: { currentUser: data, tickets } };
 };
 // we changed the host file, ticketing.dev=localhost. so when we make request to ticketing.dev, networking layer in your machine will translate it into the 127.0.0.1:80. default port=80. 127.0.0.1:80 is bound to by ingress-nginx. it means ingress-nginx will receive that request and read it off appropriately and will pass it to client. next will response successfully if we make request from browser to "/api/users/currentuser". whenever we try to make a request and we do not specify the domain, by default your browser is going to assume you are trying to make a request to the the current domain. "ticketing.dev/api/users/currentUser"
 

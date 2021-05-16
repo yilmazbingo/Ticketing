@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import useRequest from "../../hooks/use-request";
+import Router from "next/router";
 
 const NewTicket = () => {
   const [title, setTitle] = useState("");
@@ -11,7 +12,7 @@ const NewTicket = () => {
       title,
       price,
     },
-    onSuccess: (ticket) => console.log(ticket),
+    onSuccess: () => Router.push("/"),
   });
 
   const onSubmit = (e) => {
@@ -49,7 +50,7 @@ const NewTicket = () => {
             type="text"
           />
         </div>
-        {errorrs}
+        {errors}
         <button className="btn btn-primary"> Submit </button>
       </form>
     </div>
