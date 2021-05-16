@@ -13,7 +13,7 @@ const Landing = ({ currentUser, tickets }) => {
         <td>{ticket.title} </td>
         <td>{ticket.price} </td>
         <td>
-          <Link href={`/tickets/${ticket.id}`}> View </Link>
+          <Link href={`/tickets/${ticket.id}`}>View</Link>
         </td>
       </tr>
     );
