@@ -31,7 +31,7 @@ const NewTicket = () => {
     <div>
       <h1>create ticke</h1>
       <form onSubmit={onSubmit} action="">
-        <div class="form-group">
+        <div className="form-group">
           <label for="">Ticket</label>
           <input
             value={title}

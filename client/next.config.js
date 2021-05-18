@@ -5,4 +5,7 @@ module.exports = {
     config.watchOptions.poll = 300;
     return config;
   },
+  env: {
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+  },
 };

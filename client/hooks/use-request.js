@@ -19,9 +19,12 @@ const useRequest = ({ url, method, body, onSuccess }) => {
         <div className="alert alert-danger">
           <h4>Ooops...</h4>
           <ul className="my-0">
-            {err.response.data.errors.map((err, index) => (
-              <li key={index}>{err.message}</li>
-            ))}
+            {/* {err &&
+              err.response &&
+              err.response.data.errors.map((err, index) => (
+                <li key={index}>{err.message}</li>
+              ))} */}
+            {err && <li>{err.message}</li>}
           </ul>
         </div>
       );
