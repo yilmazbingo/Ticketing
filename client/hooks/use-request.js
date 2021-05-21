@@ -4,10 +4,10 @@ import { useState } from "react";
 // hooks are used inside react component. getInitialsProps is not a componennt. it is a plain function. since we are not allowed to fetch data during ssr, we cannot use this in componnet for making request during sssr
 const useRequest = ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
-  const doRequest = async () => {
+  const doRequest = async (props = {}) => {
     try {
       setErrors(null);
-      const response = await axios[method](url, body);
+      const response = await axios[method](url, { ...body, ...props });
       console.log("response from doRequest", response.data);
       if (onSuccess) {
         onSuccess(response.data);
