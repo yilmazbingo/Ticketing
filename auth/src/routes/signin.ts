@@ -38,6 +38,7 @@ router.post(
       },
       process.env.JWT_KEY!
     );
+    console.log("tesitn auth");
     req.session = { jwt: userJwt };
     res.status(200).send(existingUser);
   }
