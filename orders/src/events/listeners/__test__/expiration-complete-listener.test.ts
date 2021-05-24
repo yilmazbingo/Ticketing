@@ -13,13 +13,14 @@ const setup = async () => {
     title: "concert",
     price: 20,
   });
-
+  await ticket.save();
   const order = Order.build({
     status: OrderStatus.Created,
     userId: "sdaa",
     expiresAt: new Date(),
     ticket,
   });
+  await order.save();
 
   const data: ExpirationCompleteEvent["data"] = {
     orderId: order.id,
@@ -47,6 +48,8 @@ it("emit an OrderCancelled event", async () => {
   const eventData = JSON.parse(
     (natsWrapper.client.publish as jest.Mock).mock.calls[0][1]
   );
+  console.log("eventData", eventData);
+  console.log("order", order);
   expect(eventData.id).toEqual(order.id);
 });
 

@@ -1,6 +1,5 @@
 import { Message } from "node-nats-streaming";
 import { OrderCancelledPublisher } from "../publishers/order-cancelled-publisher";
-
 import {
   Listener,
   ExpirationCompleteEvent,
