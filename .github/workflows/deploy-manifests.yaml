@@ -1,0 +1,23 @@
+name: deploy-manifests
+
+# on dictates when this should be executed
+on:
+#   merge and pull request counted as push directly to master branch
+  push:
+    branches:
+      - master
+    paths:
+      - 'infra/**'
+jobs:
+  build:    
+#    docker already installed on this container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: digitalocean/action-doctl@v2
+        with:
+#          token will be provided to 'digitalocean/action-doctl@v2' script and we are going to get
+# preinitialized version of doctl. 
+         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} 
+      - run: doctl kubernetes cluster kubeconfig save ticketing
+      - run: kubectl apply -f infra/k8s
