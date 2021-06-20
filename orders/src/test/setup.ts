@@ -25,6 +25,10 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  // without this "emit an OrderCancelled event" was faling. eventData.id and order.id were not mathcing
+  // Because same mock is used in all differetn suits. and mock keeps track of how many times it has been called
+
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
   for (let connection of collections) {
     await connection.deleteMany({});
