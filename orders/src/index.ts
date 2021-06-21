@@ -8,7 +8,7 @@ import { PaymentCreatedListener } from "./events/listeners/payment-created-liste
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
-    throw new Error("JWT_KEY must be defined");
+    throw new Error("JWT_KEY must be defined!");
   }
   if (!process.env.MONGO_URI) {
     throw new Error("MONGO_uri must be defined");
