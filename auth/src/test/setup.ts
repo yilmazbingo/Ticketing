@@ -46,6 +46,6 @@ global.signin = async () => {
     .send({ email, password })
     .expect(201);
   const cookie = response.get("Set-Cookie");
-  console.log("Cookie in global sign in test", cookie);
+  // console.log("Cookie in global sign in test", cookie);
   return cookie;
 };
