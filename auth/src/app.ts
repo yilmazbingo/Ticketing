@@ -18,8 +18,9 @@ app.use(
   cookieSession({
     // this will not encrypt. easier for different backend servers. we store jwt
     signed: false,
-    // this saying use only for https connections
-    secure: process.env.NODE_ENV !== "test",
+    // this saying use only for https connections. since my domain name is http
+    // secure: process.env.NODE_ENV !== "test",
+    secure: false,
   })
 );
 app.use(currentUserRouter);
