@@ -81,7 +81,7 @@ spec:
     # posts.com is arbitrary
     # set up react-server-pod. we need to make sure inside of react server, our actual react code is going to make requests to post.com. this is where our kubernetes cluster is located. if we make a request to posts.com, react app is going to attempt to connect to that ingress-nginx pod. so we need to modify index.js of react. localhost code should be posts.com
     # after setting up container, deployment and service, we have to write the routing rules.
-    - host: ticketing.dev
+    - host: www.ticketing-bingology.xyz
       http:
         paths:
           # ingress does know about http methods. to differetntiate GET /posts and POST /posts, I add /posts/create
