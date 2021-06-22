@@ -18,7 +18,7 @@ const buildClient = ({ req }) => {
       headers: req.headers,
     });
   } else {
-    // in browser, browser takes care of the headers
+    // in the browser, browser takes care of the headers
     return axios.create({
       baseURL: "/",
     });
