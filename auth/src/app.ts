@@ -10,7 +10,7 @@ import { errorHandler, NotFoundError } from "@yilmazcik/common";
 
 const app = express();
 
-// traffic is proxied to our application through ingress-nginx. express does not trust proxy.
+// traffic is proxied to our application through ingress-nginx. express does not trust proxy
 app.set("trust proxy", true);
 app.use(json());
 // cookie-session will create req.session object.  any information we store on this object will be automatically serialized by cookie session and stored inside the cookie.
