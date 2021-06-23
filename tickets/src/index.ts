@@ -18,7 +18,7 @@ const start = async () => {
     throw new Error("NATS Cluster Id must be defined");
   }
   if (!process.env.NATS_URL) {
-    throw new Error("NATS url must be defined");
+    throw new Error("NATS url must be defined!");
   }
 
   try {
