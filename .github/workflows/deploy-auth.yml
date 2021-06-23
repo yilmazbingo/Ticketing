@@ -25,7 +25,7 @@ jobs:
       - uses: digitalocean/action-doctl@v2
         with:
           # token will be provided to 'digitalocean/action-doctl@v2' script and we are going to get
-          # preinitialized version of doctl.
+          # preinitialized version of doctl
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - run: doctl kubernetes cluster kubeconfig save ticketing
       - run: kubectl rollout restart deployment auth-depl
