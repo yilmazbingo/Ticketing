@@ -11,7 +11,7 @@ const start = async () => {
     throw new Error("JWT_KEY must be defined!");
   }
   if (!process.env.MONGO_URI) {
-    throw new Error("MONGO_uri must be defined");
+    throw new Error("MONGO_uri must be defined!");
   }
   try {
     // url will the service that governing this deployment

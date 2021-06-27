@@ -1,7 +1,7 @@
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 
-// scrypt is callback based
+// scrypt is callback based so we promisfy
 const scryptAsync = promisify(scrypt);
 
 export class Password {
