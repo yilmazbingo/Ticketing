@@ -28,7 +28,7 @@ app.use(updateTicketRouter);
 // when we mark a func with "async", it no longer returns a value, instead it returns a promise thats is going to resolve with some value in the future even we throw an error inside.
 // this method works but this is specific to express.
 //           app.all("*", async (req, res, next) => {
-//                 next(new NotFoundError());
+//                 next(new NotFoundError())
 //           });
 // we assume other enginner does not know about express
 app.all("*", async (req, res, next) => {

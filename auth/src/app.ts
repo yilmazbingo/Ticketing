@@ -35,7 +35,7 @@ app.use(signupRouter);
 //           });
 // we assume other enginner does not know about express
 app.all("*", async (req, res, next) => {
-  // express-async-errors will help this error to be resolved without next()
+  // express-async-errors will help this error to be resolved without using next()
   throw new NotFoundError();
 });
 app.use(errorHandler);
