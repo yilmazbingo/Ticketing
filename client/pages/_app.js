@@ -12,7 +12,7 @@ const AppComponent = ({ Component, pageProps }) => {
 // Error: Anonymous arrow functions cause Fast Refresh to not preserve local component state.Please add a name to your function
 
 // export default ({ Component, pageProps }) => {
-//   return <Component {...pageProps} />;
+//   return <Component {...pageProps} />
 // };
 // getInitialProps can be attached to component but not getServerSideProps
 // AppComponent.getInitialProps = async (appContext) => {

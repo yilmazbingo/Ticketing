@@ -13,7 +13,7 @@ const start = async () => {
   }
 
   try {
-    // url will the service that governing this deployment
+    // url will be the service that governing this deployment
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,
       process.env.NATS_CLIENT_ID,

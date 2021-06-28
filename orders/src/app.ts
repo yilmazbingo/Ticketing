@@ -8,7 +8,7 @@ import { showOrderRouter } from "./routes/show";
 import { indexOrderRouter } from "./routes/index";
 import { deleteOrderRouter } from "./routes/delete";
 const app = express();
-// traffic is proxied to our application through nginx-ingress. express does not trust proxy.
+// traffic is proxied to our application through nginx-ingress. express does not trust proxy
 app.set("trust proxy", true);
 app.use(json());
 app.use(

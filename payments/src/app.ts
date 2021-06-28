@@ -22,7 +22,7 @@ app.use(currentUser);
 // app.use(indexTicketRouter);
 app.use(createChargeRouter);
 // app.use(showTicketRouter);
-// app.use(updateTicketRouter);
+// app.use(updateTicketRouter)
 
 // app.all will be watching for any type of request to any route
 // when we mark a func with "async", it no longer returns a value, instead it returns a promise thats is going to resolve with some value in the future even we throw an error inside.
