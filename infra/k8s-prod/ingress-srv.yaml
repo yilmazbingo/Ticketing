@@ -14,7 +14,7 @@
 # data:
 #   use-forwarded-headers: "true"
 # metadata:
-#   # name: nginx-configuration
+#    name: nginx-configuration
 #   name: ingress-nginx-controller
 #   namespace: ingress-nginx
 # # apiVersion: extensions/v1beta1
