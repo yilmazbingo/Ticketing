@@ -189,7 +189,7 @@ spec:
                 name: orders-srv
                 port:
                   number: 3000
-           this regex means catch all
+          #  this regex means catch all
           - path: /?(.*)
             pathType: Exact
             backend:
