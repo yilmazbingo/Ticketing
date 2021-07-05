@@ -22,7 +22,7 @@ const Landing = ({ currentUser, tickets }) => {
     });
 
   return (
-    <BaseLayout currentUser={currentUser.currentUser}>
+    <BaseLayout currentUser={currentUser ? currentUser.currentUser : null}>
       <div>
         <h1>
           <table className="table">
