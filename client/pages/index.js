@@ -45,10 +45,17 @@ const Landing = ({ currentUser, tickets }) => {
 export default Landing;
 export const getServerSideProps = async (context) => {
   const client = buildClient(context);
-  const { data } = await client.get("/api/users/currentuser");
-  const { data: tickets } = await client.get("api/tickets");
+  let currentUser, tickets;
+  try {
+    const currentUserRes = await client.get("/api/users/currentuser");
+    currentUser = currentUserRes.data;
+    const ticketsRes = await client.get("api/tickets");
+    tickets = ticketsRes.data;
+  } catch (e) {
+    console.log("error in client index server", e);
+  }
 
-  return { props: { currentUser: data, tickets } };
+  return { props: { currentUser, tickets } };
 };
 // we changed the host file, ticketing.dev=localhost. So when we make request to ticketing.dev, networking layer in your machine will translate it into the 127.0.0.1:80. default port=80. 127.0.0.1:80 is bound to by ingress-nginx. it means ingress-nginx will receive that request and read it off appropriately and will pass it to client. next will response successfully if we make request from browser to "/api/users/currentuser". whenever we try to make a request and we do not specify the domain, by default your browser is going to assume you are trying to make a request to the the current domain. "ticketing.dev/api/users/currentUser"
 
