@@ -55,8 +55,8 @@ metadata:
 #     nginx.org/client-max-body-size: "600m"
 # spec:
 #   # ingressClassName: external-lb
-#    class: acme-lb
-#    hostAliases:
+#   # class: acme-lb
+#   # hostAliases:
 #   #   - ip: "172.17.0.1"
 #   #     hostnames:
 #   #     - "host.minikube.internal"
