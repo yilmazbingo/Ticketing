@@ -10,14 +10,14 @@ const OrderShow = ({ order, currentUser }) => {
     url: "/api/payments",
     method: "post",
     body: {
-      orderId: order.id,
+      orderId: order && order.id,
     },
     onSuccess: (payment) => Router.push("/orders"),
   });
 
   useEffect(() => {
     const findTimeLeft = () => {
-      const msLeft = new Date(order.expiresAt) - new Date();
+      const msLeft = new Date(order && order.expiresAt) - new Date();
       setTimeLeft(Math.round(msLeft / 1000));
     };
     // we call this otherwise we would wait 1000 ms to see the time on the screen
@@ -37,8 +37,8 @@ const OrderShow = ({ order, currentUser }) => {
       <StripeCheckout
         token={({ id }) => doRequest({ token: id })}
         stripeKey={`${process.env.STRIPE_API_KEY}`}
-        amount={order.ticket.price * 100}
-        email={currentUser.email}
+        amount={order && order.ticket.price * 100}
+        email={currentUser && currentUser.email}
       />
       {errors}
     </div>
@@ -50,8 +50,23 @@ export default OrderShow;
 export const getServerSideProps = async (context) => {
   const { orderId } = context.query;
   const client = buildClient(context);
-  const { data } = await client.get(`/api/orders/${orderId}`);
-  const { data: currentUser } = await client.get("/api/users/currentuser");
 
-  return { props: { order: data, currentUser } };
+  let currentUser, order;
+  try {
+    const currentUserRes = await client.get("/api/users/currentuser");
+    currentUser = currentUserRes.data;
+    const orderRes = await client.get(`/api/orders/${orderId}`);
+    order = orderRes.data;
+    console.log("order in order detail page", order);
+  } catch (e) {
+    console.log("error in client index server", e);
+  }
+  // because undefined cannot be serialized
+  if (!currentUser) {
+    currentUser = null;
+  }
+  if (!order) {
+    order = null;
+  }
+  return { props: { currentUser, order } };
 };

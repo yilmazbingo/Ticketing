@@ -22,7 +22,7 @@ const signUp = ({ currentUser }) => {
     // Router.push("/"); instead I add onSuccess callback to the useRequest hook.
   };
   return (
-    <BaseLayout currentUser={currentUser.currentUser}>
+    <BaseLayout currentUser={currentUser && currentUser.currentUser}>
       <form onSubmit={onSubmit}>
         <h1>Signup</h1>
         <div className="form-group">
@@ -52,7 +52,12 @@ const signUp = ({ currentUser }) => {
 export default signUp;
 export const getServerSideProps = async (context) => {
   const client = buildClient(context);
-  const { data } = await client.get("/api/users/currentuser");
-
-  return { props: { currentUser: data } };
+  let currentUser;
+  try {
+    const currentUserRes = await client.get("/api/users/currentuser");
+    currentUser = currentUserRes.data;
+  } catch (e) {
+    console.log("error in sigin page", e);
+  }
+  return { props: { currentUser } };
 };
