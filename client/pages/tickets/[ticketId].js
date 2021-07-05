@@ -14,8 +14,8 @@ const TicketShow = ({ ticket }) => {
   });
   return (
     <div>
-      <h1> {ticket.title} </h1>
-      <h4> Price:{ticket.price} </h4>
+      <h1> {ticket && ticket.title} </h1>
+      {ticket && <h4> Price:{ticket.price} </h4>}
       {errors}
       {/* react passess "event" to events {doRequest}*/}
       <button className="btn btn-primary" onClick={() => doRequest()}>
@@ -30,6 +30,12 @@ export default TicketShow;
 export const getServerSideProps = async (context) => {
   const { ticketId } = context.query;
   const client = buildClient(context);
-  const { data } = await client.get(`/api/tickets/${ticketId}`);
-  return { props: { ticket: data } };
+  let ticket;
+  try {
+    const ticketResponse = await client.get(`/api/tickets/${ticketId}`);
+    ticket = ticketResponse.data;
+  } catch (e) {
+    console.log("error in ticket detail page", e);
+  }
+  return { props: { ticket } };
 };
