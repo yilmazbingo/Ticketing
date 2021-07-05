@@ -49,6 +49,7 @@ it("returns 400 when purchaisng a cancelled error", async () => {
     price: 34,
     status: OrderStatus.Cancelled,
   });
+  await order.save();
 
   await request(app)
     .post("/api/payments")
@@ -60,7 +61,7 @@ it("returns 400 when purchaisng a cancelled error", async () => {
     .expect(400);
 });
 
-// we ar enot reaching stripe api here. MOCK STRIPE TESTING
+// we ar enot reaching stripe api here. MOCK STRIPE TESTING SETUP
 // it("returns a 201 with valid inputs", async () => {
 //   const userId = mongoose.Types.ObjectId().toHexString();
 //   const order = Order.build({
@@ -113,7 +114,7 @@ it("returns a 201 with valid inputs", async () => {
     })
     .expect(201);
 
-  const stripeCharges = await stripe.charges.list({ limit: 10 });
+  const stripeCharges = await stripe.charges.list({ limit: 50 });
   const stripeCharge = stripeCharges.data.find((charge) => {
     return charge.amount === price * 100;
   });
@@ -124,7 +125,7 @@ it("returns a 201 with valid inputs", async () => {
   // payment can be null. null also considered to be "defined" unlike "undefined"
   // if payment is null.   expect(payment).toBeDefined will be true
   const payment = await Payment.findOne({
-    _orderId: order.id,
+    orderId: order.id,
     stripeId: stripeCharge?.id,
   });
 

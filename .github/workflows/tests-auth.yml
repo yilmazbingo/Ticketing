@@ -1,10 +1,13 @@
-name: tests
+name: tests-auth
 
 # when will we run this workflow
 on:
-  pull_request
+  pull_request:
+    # this says if you get pul request and file changes inside auth directory, then run jobs
+    paths:
+      - "auth/**"
 # jobs will define some number of things that we want to do whenever pull request is created, reopened or updated
-# we want to start up a container running on ubuntu, first thing we want do take all the code 
+# we want to start up a container running on ubuntu, first thing we want do take all the code
 jobs:
   build:
     runs-on: ubuntu-latest

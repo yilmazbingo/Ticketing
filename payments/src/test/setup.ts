@@ -12,6 +12,8 @@ declare global {
 }
 
 jest.mock("../nats-wrapper");
+// this case for mocking stripe instead of reaching real stripe api
+// jest.mock("../stripe");
 process.env.STRIPE_KEY =
   "sk_test_51IpWSSEveMq3I0sT8Li2SIGXCiJ0mDbQijl2sCpXYc5VGyZtEK20EX9gRXMvGggKCw2mmcdfsCpy9p2WoTxh5xHE00gkvT05ZE";
 
