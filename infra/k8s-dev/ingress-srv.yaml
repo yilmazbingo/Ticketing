@@ -1,0 +1,86 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    # use the shared ingress-nginx
+    # nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/auth-method: POST
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # kubernetes.io/tls-acme: "true"
+    # ingress.kubernetes.io/rewrite-target: /
+    # nginx.ingress.kubernetes.io/configuration-snippet: proxy_set_header Authorization $http_authorization
+spec:
+  # ingressClassName: external-lb
+  # class: acme-lb
+  # hostAliases:
+  #   - ip: "172.17.0.1"
+  #     hostnames:
+  #     - "host.minikube.internal"
+  # The default backend is a service which handles all URL paths and hosts the nginx controller doesn't understand
+  defaultBackend:
+    service:
+      name:
+        nginx-ingress-default-backend
+        # name: default-http-backend:80
+      port:
+        number: 80
+
+  rules:
+    # we can host one single app at one single domain. BUt with Kubernetes we can host ton of infrastructure. we are not limited to just hosting one singular app. we could host many different apps at many different domains inside a single kubernetes cluster. ingress-nginx setup assuming u might be hosting many different apps at different domains. host property is saying that this config after me is tied to posts.com.
+    # bad side is dev env, we are used to accessing all of our running servers at localhost. we have to trick our local machine into thinking that "posts.com" is equivalent to localhost.
+    # /etc/hosts
+    # code /etc/hosts
+    # since i am using ingress-nginx with minikube i need "minikube ip" "172.17.0.3 posts.com"
+    # so when we visit "posts.com" that request will be sent to localhost. that request will go to ingress-srv, nginx will think we are trying to visit posts.com and then it will apply the routing rules after posts
+    # posts.com/posts will make request to "posts-clusterip-srv"
+    # we have to add routing config for all services
+    # posts.com is arbitrary
+    # set up react-server-pod. we need to make sure inside of react server, our actual react code is going to make requests to post.com. this is where our kubernetes cluster is located. if we make a request to posts.com, react app is going to attempt to connect to that ingress-nginx pod. so we need to modify index.js of react. localhost code should be posts.com
+    # after setting up container, deployment and service, we have to write the routing rules.
+    - host: ticketing.dev
+      http:
+        paths:
+          # ingress does know about http methods. to differetntiate GET /posts and POST /posts, I add /posts/create
+          # - path: /posts/create
+          # whenever a request comes into ingress nginx, it is going to attempt to match the path of that incoming in order.
+          - path: /api/users/?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: auth-srv
+                port:
+                  number: 3000
+          - path: /api/payments/?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: payments-srv
+                port:
+                  number: 3000
+          - path: /api/tickets/?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: tickets-srv
+                port:
+                  number: 3000
+          - path: /api/orders/?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: orders-srv
+                port:
+                  number: 3000
+          # this regex means catch all
+          - path: /?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
