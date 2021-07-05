@@ -7,7 +7,7 @@ const buildClient = ({ req }) => {
     return axios.create({
       // kubectl get namespaces ==> ingress-nginx
       //kubectl get services -n ingress-nginx ==> ingress-nginx-controller
-      // we have to speocify the domain. ingress-nginx will not assume that we want to use the only domain inside the rules
+      // we have to specify the domain. ingress-nginx will not assume that we want to use the only domain inside the rules
 
       baseURL:
         "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
