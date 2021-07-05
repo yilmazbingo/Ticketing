@@ -49,14 +49,19 @@ export const getServerSideProps = async (context) => {
   try {
     const currentUserRes = await client.get("/api/users/currentuser");
     currentUser = currentUserRes.data;
+    console.log("currentUser in client index.js", currentUser);
     const ticketsRes = await client.get("api/tickets");
     tickets = ticketsRes.data;
+    console.log("tickets in index.js client", tickets);
   } catch (e) {
     console.log("error in client index server", e);
   }
   // because undefined cannot be serialized
   if (!currentUser) {
     currentUser = null;
+  }
+  if (!tickets) {
+    tickets = null;
   }
   return { props: { currentUser, tickets } };
 };
