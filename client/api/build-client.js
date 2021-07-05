@@ -1,9 +1,11 @@
 import axios from "axios";
 //  in incoming request we care about headers
 
-const baseUrl = (process.env.NODE_ENV = "development"
-  ? "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
-  : "http://www.ticketing-bingology.xyz/");
+const baseUrl =
+  process.env.NODE_ENV === "development"
+    ? // const baseUrl = (process.env["NODE_ENV"] = "development"
+      "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
+    : "http://www.ticketing-bingology.xyz/";
 
 const buildClient = ({ req }) => {
   // on server we need to access to headers
