@@ -7,17 +7,19 @@ import BaseLayout from "../components/BaseLayout";
 //useRequest is a hook and hooks are used inside a  component. getInitialsProps is not a component, it is a plain function. we are not allowed to fetch data inside of a component during the ssr process.
 const Landing = ({ currentUser, tickets }) => {
   console.log("tickets", tickets);
-  const ticketList = tickets.map((ticket) => {
-    return (
-      <tr key={ticket.id}>
-        <td>{ticket.title} </td>
-        <td>{ticket.price} </td>
-        <td>
-          <Link href={`/tickets/${ticket.id}`}>View</Link>
-        </td>
-      </tr>
-    );
-  });
+  const ticketList =
+    tickets &&
+    tickets.map((ticket) => {
+      return (
+        <tr key={ticket.id}>
+          <td>{ticket.title} </td>
+          <td>{ticket.price} </td>
+          <td>
+            <Link href={`/tickets/${ticket.id}`}>View</Link>
+          </td>
+        </tr>
+      );
+    });
 
   return (
     <BaseLayout currentUser={currentUser.currentUser}>
