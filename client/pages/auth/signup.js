@@ -59,5 +59,8 @@ export const getServerSideProps = async (context) => {
   } catch (e) {
     console.log("error in sigin page", e);
   }
+  if (!currentUser) {
+    currentUser = null;
+  }
   return { props: { currentUser } };
 };
