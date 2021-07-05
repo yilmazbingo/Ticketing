@@ -1,5 +1,5 @@
 import axios from "axios";
-//  in incoming request we care about headers
+//  in incoming requests we care about headers
 
 const buildClient = ({ req }) => {
   // on server we need to access to headers
