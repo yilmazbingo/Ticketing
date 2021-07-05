@@ -29,14 +29,6 @@
 // export default buildClient;
 
 import axios from "axios";
-//  in incoming requests we care about headers
-
-export default ({ req }) => {
-  if (typeof window === "undefined") {
-    return axios.create({
-      // kubectl get namespaces ==> ingress-nginx
-      //kubectl get services -n ingress-nginx ==> ingress-nginx-controller
-      // we have to specify the domain. ingress-nginx will not assume that we want to use the only domain inside the rules
 
     return axios.create({
       baseURL:

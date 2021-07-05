@@ -1,0 +1,16 @@
+name: tests-orders
+
+# when will we run this workflow
+on:
+  pull_request:
+    # this says if you get pul request and file changes inside orders directory, then run jobs
+    paths:
+      - "orders/**"
+# jobs will define some number of things that we want to do whenever pull request is created, reopened or updated
+# we want to start up a container running on ubuntu, first thing we want do take all the code
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd orders && npm install && npm run test:ci
